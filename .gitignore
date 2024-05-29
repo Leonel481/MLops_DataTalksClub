@@ -2,3 +2,8 @@
 /.env
 env
 /env
+01. Introduction/data/
+01. Introduction/mlruns/1/
+02. experiment_tracking/artifacts_local/3/
+02. experiment_tracking/TAXI_DATA_FOLDER/
+mlruns/
