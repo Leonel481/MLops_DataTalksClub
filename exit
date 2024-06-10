@@ -1,0 +1,31 @@
+[33mcommit 396447f0036e4b310014f8d91b934a454c33960a[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Leonel481 <leonel.aliaga.v@gmail.com>
+Date:   Mon Jun 10 17:52:07 2024 -0500
+
+    homework3
+
+[33mcommit f9af564fbb0c8bb3ae9ac891696ee11e849bbc20[m
+Author: Leonel481 <leonel.aliaga.v@gmail.com>
+Date:   Wed May 29 00:08:16 2024 -0500
+
+    semana 2
+
+[33mcommit 41bdc9203aac040451faf07440c494833de97737[m
+Author: Leonel481 <leonel.aliaga.v@gmail.com>
+Date:   Mon May 20 14:46:26 2024 -0500
+
+    homwqork
+
+[33mcommit fbfd9f4c319798313f0cd0ee4f38b24c64d2e036[m
+Author: Leonel481 <leonel.aliaga.v@gmail.com>
+Date:   Mon May 20 14:28:35 2024 -0500
+
+    Revert "homework"
+    
+    This reverts commit 1a8ca92d1cca1203b6d1fff45ae693d535a1943d.
+
+[33mcommit 1a8ca92d1cca1203b6d1fff45ae693d535a1943d[m
+Author: Leonel481 <leonel.aliaga.v@gmail.com>
+Date:   Mon May 20 14:26:45 2024 -0500
+
+    homework
