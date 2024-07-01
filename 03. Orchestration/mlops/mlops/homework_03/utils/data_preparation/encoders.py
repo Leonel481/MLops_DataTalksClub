@@ -9,9 +9,11 @@ def vectorize_features(
     training_set: pd.DataFrame,
     validation_set: Optional[pd.DataFrame] = None,
 ) -> Tuple[scipy.sparse.csr_matrix, scipy.sparse.csr_matrix, DictVectorizer]:
-    dv = DictVectorizer()
 
-    train_dicts = training_set.to_dict(orient='records')
+    categorical = ['PULocationID', 'DOLocationID']
+    train_dicts = training_set[categorical].to_dict(orient='records')
+
+    dv = DictVectorizer()
     X_train = dv.fit_transform(train_dicts)
 
     X_val = None

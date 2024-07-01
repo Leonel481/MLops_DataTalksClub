@@ -42,7 +42,8 @@ blocks:
   configuration:
     file_source:
       path: homework_03/data_exporters/build.py
-  downstream_blocks: []
+  downstream_blocks:
+  - save
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -55,6 +56,24 @@ blocks:
   upstream_blocks:
   - transform
   uuid: build
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_source:
+      path: homework_03/data_exporters/save.py
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: save
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - build
+  uuid: save
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
