@@ -3,7 +3,7 @@ import pickle
 import click
 
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, root_mean_squared_error
 
 import mlflow
 
