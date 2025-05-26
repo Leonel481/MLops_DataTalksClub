@@ -7,3 +7,6 @@ env
 02. experiment_tracking/artifacts_local/3/
 02. experiment_tracking/TAXI_DATA_FOLDER/
 mlruns/
+02. Experiment traking and model management/TAXI_DATA_FOLDER
+02. Experiment traking and model management/TAXI_DATA_PROCESS
+02. Experiment traking and model management/mlruns
