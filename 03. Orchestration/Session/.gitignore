@@ -1,0 +1,87 @@
+# ===============================
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+*.pkl
+*.db
+*.log
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+
+# Jupyter
+.ipynb_checkpoints
+
+# VSCode
+.vscode/
+
+# ===============================
+# Airflow
+airflow.db
+airflow.cfg
+logs/
+dags/__pycache__/
+*.airflow
+
+# Airflow .env or config files
+.env.airflow
+.env.local
+
+# SQLite DBs
+*.sqlite
+*.sqlite3
+
+# ===============================
+# MLflow
+mlruns/
+mlartifacts/
+mlflow.db
+mlflow.log
+mlruns.db
+
+# Artifacts
+artifacts/
+models/
+**/model/
+**/models_lr/
+
+# MLflow tracking URI data (S3/MinIO may map here)
+s3://mlflow/
+*.mlmodel
+MLmodel
+
+# ===============================
+# MinIO (if mounted locally or testing locally)
+minio/
+minio-data/
+minio-volume/
+minio_buckets/
+minio_test_data/
+*.minio
+
+# ===============================
+# Docker
+*.pid
+*.tar
+*.sock
+docker-compose.override.yml
+
+# ===============================
+# OS and misc
+.DS_Store
+Thumbs.db
+
+config/
+logs/
+mlruns/
+models/
+artifacts/
+mlflow.db
+mlflow.log
+

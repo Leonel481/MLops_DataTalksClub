@@ -1,0 +1,15 @@
+joblib==1.5.1
+numpy==1.26.4
+nvidia-nccl-cu12==2.27.3
+pandas==2.1.4
+python-dateutil==2.9.0.post0
+pytz==2025.2
+scikit-learn==1.6.1
+scipy==1.15.3
+six==1.17.0
+threadpoolctl==3.6.0
+tzdata==2025.2
+xgboost==3.0.2
+mlflow-skinny==2.22.1
+boto3==1.28.59
+minio==7.2.15

@@ -1,0 +1,5 @@
+# Dockerfile para MLflow con psycopg2
+# FROM ghcr.io/mlflow/mlflow:v2.22.1
+FROM ghcr.io/mlflow/mlflow:latest
+# Instala el cliente PostgreSQL
+RUN pip install psycopg2-binary boto3 minio

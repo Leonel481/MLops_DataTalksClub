@@ -1,8 +1,0 @@
-blocks:
-  prismatic_tree:
-    name: prismatic tree
-    type: chart
-    uuid: prismatic_tree
-layout:
-- - block_uuid: prismatic_tree
-    width: 1
