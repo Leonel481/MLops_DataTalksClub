@@ -1,0 +1,31 @@
+
+services:
+  db:
+    image: postgres:latest
+    container_name: mlops-monitoring-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: grafana
+    ports:
+      - "5432:5432"
+    networks:
+      - back-tier
+
+  grafana:
+    image: grafana/grafana:latest
+    user: "472:472"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config/grafana_datasources.yaml:/etc/grafana/provisioning/datasources/datasource.yaml:ro
+    networks:
+      - front-tier
+      - back-tier
+
+volumes:
+  grafana_data: {}
+
+networks:
+  front-tier:
+  back-tier:
