@@ -1,4 +1,6 @@
+import json
 import requests 
+from deepdiff import DeepDiff
 
 event = {
     "Records": [
@@ -23,5 +25,21 @@ event = {
 
 
 url = 'http://localhost:8080/2015-03-31/functions/function/invocations'
-response = requests.post(url, json=event)
-print(response.json())
+actual_response = requests.post(url, json=event).json()
+
+print('actual response:')
+print(json.dumps(actual_response, indent=2))
+
+expected_response = { 
+        'predictions': [{
+            'model': 'ride_duration_prediuction_model',
+            'version' : 'm-ea1dfabd247448bbaaba443d31ce73b9',
+            'prediction' : {
+                'ride_duration': 10.0,
+                'ride_id': 256
+            }
+        }]
+    }
+
+diff = DeepDiff(actual_response, expected_response)
+print(diff)
