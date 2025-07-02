@@ -15,4 +15,4 @@ model_service = model.init(
 )
 
 def lambda_handler(event, context):
-    return model_service.lambda_handler(event, context)
+    return model_service.lambda_handler(event)

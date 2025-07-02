@@ -8,7 +8,7 @@ def get_model_location(run_id):
 
     model_location = os.getenv('MODEL_LOCATION')
 
-    if model_location is None:
+    if model_location:
         return model_location
 
     model_bucket = os.getenv('MODEL_BUCKET','mlflow-leo-bucket-useast2')
@@ -93,7 +93,7 @@ class KinesisCallback:
         self.kinesis_client.put_record(
             StreamName=self.prediction_stream_name,
             Data=json.dumps(prediction_event),
-            PartitionKey=ride_id,
+            PartitionKey=str(ride_id),
         )
 
 def create_kinesis_client():
