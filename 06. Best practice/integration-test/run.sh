@@ -16,17 +16,7 @@ export PREDICTIONS_STREAM_NAME="ride_predictions"
 
 docker-compose up -d
 
-echo "Esperando que LocalStack esté listo..."
-
-until aws --endpoint-url=http://localhost:4566 kinesis list-streams > /dev/null; do
-  sleep 2
-done
-
-echo "Kinesis está listo"
-
-export AWS_ACCESS_KEY_ID=test
-export AWS_SECRET_ACCESS_KEY=test
-export AWS_REGION=us-east-2
+sleep 5
 
 aws --endpoint-url=http://localhost:4566 \
     --region us-east-2 \
@@ -45,7 +35,7 @@ if [ ${ERROR_CODE} != 0 ]; then
 fi
 
 
-# pipenv run python test_kinesis.py
+pipenv run python test_kinesis.py
 
 ERROR_CODE=$?
 

@@ -1,8 +1,14 @@
+from pathlib import Path
+
 import model
 
+def read_text(file):
+    test_directory = Path(__file__).parent
+    with open(test_directory / file, 'rt', encoding='utf-8') as f_in:
+        return f_in.read().strip()
 
 def test_base64_decode():
-    base64_input = "ewogICAgICAgICJyaWRlIjogewogICAgICAgICAgICAiUFVMb2NhdGlvbklEIjogMTMwLAogICAgICAgICAgICAiRE9Mb2NhdGlvbklEIjogMjA1LAogICAgICAgICAgICAidHJpcF9kaXN0YW5jZSI6IDMuNjYKICAgICAgICB9LCAKICAgICAgICAicmlkZV9pZCI6IDI1NgogICAgfQ=="
+    base64_input = read_text('data.b64')
     actual_result = model.base64_decode(base64_input)
     expected_result = {
         'ride': {
@@ -58,6 +64,8 @@ def test_predict():
     assert actual_prediction == expected_prediction
 
 def test_lambda_handler():
+
+    base64_input = read_text('data.b64')
 
     model_mock = ModelMock(10.0)
     model_version = "123"
