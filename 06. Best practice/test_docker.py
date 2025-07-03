@@ -1,5 +1,6 @@
 import json
-import requests 
+
+import requests
 from deepdiff import DeepDiff
 
 event = {
@@ -10,7 +11,7 @@ event = {
                 "partitionKey": "1",
                 "sequenceNumber": "49630081666084879290581185630324770398608704880802529282",
                 "data": "ewogICAgICAgICJyaWRlIjogewogICAgICAgICAgICAiUFVMb2NhdGlvbklEIjogMTMwLAogICAgICAgICAgICAiRE9Mb2NhdGlvbklEIjogMjA1LAogICAgICAgICAgICAidHJpcF9kaXN0YW5jZSI6IDMuNjYKICAgICAgICB9LCAKICAgICAgICAicmlkZV9pZCI6IDI1NgogICAgfQ==",
-                "approximateArrivalTimestamp": 1654161514.132
+                "approximateArrivalTimestamp": 1654161514.132,
             },
             "eventSource": "aws:kinesis",
             "eventVersion": "1.0",
@@ -18,7 +19,7 @@ event = {
             "eventName": "aws:kinesis:record",
             "invokeIdentityArn": "arn:aws:iam::090719694989:role/lambda-kinesis-role",
             "awsRegion": "eu-west-1",
-            "eventSourceARN": "arn:aws:kinesis:eu-west-2:090719694989:stream/mlops_ride_events"
+            "eventSourceARN": "arn:aws:kinesis:eu-west-2:090719694989:stream/mlops_ride_events",
         }
     ]
 }
@@ -30,16 +31,15 @@ actual_response = requests.post(url, json=event).json()
 print('actual response:')
 print(json.dumps(actual_response, indent=2))
 
-expected_response = { 
-        'predictions': [{
+expected_response = {
+    'predictions': [
+        {
             'model': 'ride_duration_prediuction_model',
-            'version' : 'm-ea1dfabd247448bbaaba443d31ce73b9',
-            'prediction' : {
-                'ride_duration': 10.0,
-                'ride_id': 256
-            }
-        }]
-    }
+            'version': 'm-ea1dfabd247448bbaaba443d31ce73b9',
+            'prediction': {'ride_duration': 10.0, 'ride_id': 256},
+        }
+    ]
+}
 
 diff = DeepDiff(actual_response, expected_response)
 print(diff)

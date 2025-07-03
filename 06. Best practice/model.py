@@ -1,9 +1,10 @@
-import json
 import base64
+import json
 import os
 
 import boto3
 import mlflow
+
 
 def get_model_location(run_id: str) -> str:
 
@@ -12,21 +13,24 @@ def get_model_location(run_id: str) -> str:
     if model_location:
         return model_location
 
-    model_bucket = os.getenv('MODEL_BUCKET','mlflow-leo-bucket-useast2')
+    model_bucket = os.getenv('MODEL_BUCKET', 'mlflow-leo-bucket-useast2')
     experiment_id = os.getenv('EXPERIMENT_ID', '1')
 
     model_location = f's3://{model_bucket}/{experiment_id}/models/{run_id}/artifacts'
     return model_location
+
 
 def load_model(run_id: str):
     model_path = get_model_location(run_id)
     model = mlflow.pyfunc.load_model(model_path)
     return model
 
+
 def base64_decode(encoded_data):
     decoded_data = base64.b64decode(encoded_data).decode('utf-8')
     ride_event = json.loads(decoded_data)
     return ride_event
+
 
 class ModelService:
 
@@ -35,7 +39,7 @@ class ModelService:
         self.model_version = model_version
         self.callbacks = callbacks or []
 
-    def prepare_feature(self,ride):
+    def prepare_feature(self, ride):
         feature = {}
         feature['PU_DO'] = f"{ride['PULocationID']}_{ride['DOLocationID']}"
         feature['trip_distance'] = ride['trip_distance']
@@ -45,7 +49,6 @@ class ModelService:
     def predict(self, features):
         preds = self.model.predict(features)
         return float(preds[0])
-
 
     def lambda_handler(self, event):
 
@@ -65,11 +68,8 @@ class ModelService:
 
             predictions_event = {
                 'model': 'ride_duration_prediuction_model',
-                'version' : '123',
-                'prediction' : {
-                    'ride_duration': prediction,
-                    'ride_id': ride_id
-                }
+                'version': '123',
+                'prediction': {'ride_duration': prediction, 'ride_id': ride_id},
             }
 
             for callback in self.callbacks:
@@ -77,10 +77,8 @@ class ModelService:
 
             predictions.append(predictions_event)
 
-        return {
-            'predictions' : predictions
-        }
-    
+        return {'predictions': predictions}
+
 
 class KinesisCallback:
 
@@ -97,12 +95,13 @@ class KinesisCallback:
             PartitionKey=str(ride_id),
         )
 
+
 def create_kinesis_client():
     endpoint_url = os.getenv('KINESIS_ENDPOINT_URL', None)
 
     if endpoint_url is None:
         return boto3.client('kinesis')
-    
+
     return boto3.client('kinesis', endpoint_url=endpoint_url)
 
 
@@ -116,6 +115,6 @@ def init(prediction_stream_name: str, run_id: str, test_run: bool):
         kinesis_callback = KinesisCallback(kinesis_client, prediction_stream_name)
         callbacks.append(kinesis_callback.put_record)
 
-    model_service = ModelService(model=model,model_version=run_id , callbacks=callbacks)
+    model_service = ModelService(model=model, model_version=run_id, callbacks=callbacks)
 
     return model_service
