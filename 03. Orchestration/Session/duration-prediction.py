@@ -2,51 +2,50 @@
 # coding: utf-8
 
 import pickle
-from pathlib import Path
 from typing import Tuple, Optional
+from pathlib import Path
 
+import mlflow
 import pandas as pd
 import xgboost as xgb
 from scipy.sparse import csr_matrix
-
-from sklearn.feature_extraction import DictVectorizer
 from sklearn.metrics import root_mean_squared_error
-
-
-import mlflow
+from sklearn.feature_extraction import DictVectorizer
 
 mlflow.set_tracking_uri("http://localhost:5000")
 mlflow.set_experiment("nyc-taxi-experiment")
 
-models_folder = Path('models')
+models_folder = Path("models")
 models_folder.mkdir(exist_ok=True)
 
 
-def read_dataframe(year:int, month:int) -> pd.DataFrame:
+def read_dataframe(year: int, month: int) -> pd.DataFrame:
 
-    url = f'https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_{year}-{month:02d}.parquet'
+    url = f"https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_{year}-{month:02d}.parquet"
     df = pd.read_parquet(url)
 
-    df['duration'] = df.lpep_dropoff_datetime - df.lpep_pickup_datetime
+    df["duration"] = df.lpep_dropoff_datetime - df.lpep_pickup_datetime
     df.duration = df.duration.apply(lambda td: td.total_seconds() / 60)
 
     df = df[(df.duration >= 1) & (df.duration <= 60)]
 
-    categorical = ['PULocationID', 'DOLocationID']
+    categorical = ["PULocationID", "DOLocationID"]
     df[categorical] = df[categorical].astype(str)
 
-    df['PU_DO'] = df['PULocationID'] + '_' + df['DOLocationID']
+    df["PU_DO"] = df["PULocationID"] + "_" + df["DOLocationID"]
 
     return df
 
 
-def create_X(df:pd.DataFrame, dv:Optional[DictVectorizer]=None) -> Tuple[csr_matrix, DictVectorizer]:
-    
-    categorical = ['PU_DO'] #'PULocationID', 'DOLocationID']
-    numerical = ['trip_distance']
-    dicts = df[categorical + numerical].to_dict(orient='records')
+def create_X(
+    df: pd.DataFrame, dv: Optional[DictVectorizer] = None
+) -> Tuple[csr_matrix, DictVectorizer]:
 
-    if dv is None:        
+    categorical = ["PU_DO"]  #'PULocationID', 'DOLocationID']
+    numerical = ["trip_distance"]
+    dicts = df[categorical + numerical].to_dict(orient="records")
+
+    if dv is None:
         dv = DictVectorizer(sparse=True)
         X = dv.fit_transform(dicts)
     else:
@@ -55,20 +54,26 @@ def create_X(df:pd.DataFrame, dv:Optional[DictVectorizer]=None) -> Tuple[csr_mat
     return X, dv
 
 
-def train_model(X_train:csr_matrix, y_train:pd.Series, X_val:csr_matrix, y_val:pd.Series, dv:DictVectorizer) -> None:
+def train_model(
+    X_train: csr_matrix,
+    y_train: pd.Series,
+    X_val: csr_matrix,
+    y_val: pd.Series,
+    dv: DictVectorizer,
+) -> None:
 
     with mlflow.start_run() as run:
         train = xgb.DMatrix(X_train, label=y_train)
         valid = xgb.DMatrix(X_val, label=y_val)
 
         best_params = {
-            'learning_rate': 0.09585355369315604,
-            'max_depth': 30,
-            'min_child_weight': 1.060597050922164,
-            'objective': 'reg:squarederror',
-            'reg_alpha': 0.018060244040060163,
-            'reg_lambda': 0.011658731377413597,
-            'seed': 42
+            "learning_rate": 0.09585355369315604,
+            "max_depth": 30,
+            "min_child_weight": 1.060597050922164,
+            "objective": "reg:squarederror",
+            "reg_alpha": 0.018060244040060163,
+            "reg_lambda": 0.011658731377413597,
+            "seed": 42,
         }
 
         mlflow.log_params(best_params)
@@ -77,8 +82,8 @@ def train_model(X_train:csr_matrix, y_train:pd.Series, X_val:csr_matrix, y_val:p
             params=best_params,
             dtrain=train,
             num_boost_round=30,
-            evals=[(valid, 'validation')],
-            early_stopping_rounds=50
+            evals=[(valid, "validation")],
+            early_stopping_rounds=50,
         )
 
         y_pred = booster.predict(valid)
@@ -94,34 +99,41 @@ def train_model(X_train:csr_matrix, y_train:pd.Series, X_val:csr_matrix, y_val:p
         return run.info.run_id
 
 
-def run(year:int, month:int) -> None:
+def run(year: int, month: int) -> None:
 
-    next_year = year if month < 12 else year +1
-    next_month = month + 1 if month <12 else 1 
+    next_year = year if month < 12 else year + 1
+    next_month = month + 1 if month < 12 else 1
 
-    df_train =  read_dataframe(year=year, month=month)
-    df_val   =  read_dataframe(year=next_year, month=next_month)
+    df_train = read_dataframe(year=year, month=month)
+    df_val = read_dataframe(year=next_year, month=next_month)
 
     X_train, dv = create_X(df_train)
-    X_val, _    = create_X(df_val, dv)
+    X_val, _ = create_X(df_val, dv)
 
-    target  = 'duration'
+    target = "duration"
     y_train = df_train[target].values
-    y_val   = df_val[target].values
+    y_val = df_val[target].values
 
-    #save id ejecution mlflow
+    # save id ejecution mlflow
     run_id = train_model(X_train, y_train, X_val, y_val, dv)
     print(f'"MLflow run_id: {run_id}')
     return run_id
+
 
 if __name__ == "__main__":
 
     import argparse
 
-    parser = argparse.ArgumentParser(description='Train a model to predict taxi trip duration')
-    parser.add_argument('--year', type=int, required=True, help='Year of the data to train on')
-    parser.add_argument('--month', type=int, required=True, help='month of the data to train on')
-    args =parser.parse_args()
+    parser = argparse.ArgumentParser(
+        description="Train a model to predict taxi trip duration"
+    )
+    parser.add_argument(
+        "--year", type=int, required=True, help="Year of the data to train on"
+    )
+    parser.add_argument(
+        "--month", type=int, required=True, help="month of the data to train on"
+    )
+    args = parser.parse_args()
 
     run_id = run(year=args.year, month=args.month)
 

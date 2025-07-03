@@ -1,6 +1,6 @@
+from score import ride_duration_prediction
 from prefect.deployments import Deployment
 from prefect.orion.schemas.schedules import CronSchedule
-from score import ride_duration_prediction
 
 deployment = Deployment.build_from_flow(
     flow=ride_duration_prediction,

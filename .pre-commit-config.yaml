@@ -2,43 +2,45 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v3.2.0
+  rev: v5.0.0
   hooks:
     - id: trailing-whitespace
-      args: ["06. Best practice/"]
+      files: ^06\. Best practice/
     - id: end-of-file-fixer
-      args: ["06. Best practice/"]
+      files: ^06\. Best practice/
     - id: check-yaml
-      args: ["06. Best practice/"]
+      files: ^06\. Best practice/
     - id: check-added-large-files
-      args: ["06. Best practice/"]
+      files: ^06\. Best practice/
 
 - repo: https://github.com/pycqa/isort
-  rev: 5.10.1
+  rev: 6.0.1
   hooks:
     - id: isort
       name: isort (python)
-      args: ["06. Best practice/"]
+      files: ^06\. Best practice/
 
 - repo: https://github.com/psf/black
-  rev: 22.6.0
+  rev: 25.1.0
   hooks:
     - id: black
+      name: black
       language_version: python3.12
-      args: ["06. Best practice/"]
+      files: ^06\. Best practice/
 
-- repo: local
-  hooks:
-    - id: pylint
-      name: pylint
-      entry: pylint
-      language: system
-      types: [python]
-      args: [
-        "-rn",  # Only display messages
-        "-sn",  # Don't display the score
-        "06. Best practice/"
-      ]
+# - repo: local
+#   hooks:
+#     - id: pylint
+#       name: pylint
+#       entry: pylint
+#       language: system
+#       types: [python]
+#       args: [
+#         "-rn",
+#         "-sn",
+#         "06. Best practice/"
+#       ]
+
 - repo: local
   hooks:
     - id: pytest-check

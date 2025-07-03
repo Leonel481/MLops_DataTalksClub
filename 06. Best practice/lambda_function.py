@@ -2,9 +2,9 @@ import os
 
 import model
 
-PREDICTION_STREAM_NAME = os.getenv('PREDICTION_STREAM_NAME', 'mlops_ride_events')
-RUN_ID = os.getenv('RUN_ID')
-TEST_RUN = os.getenv('TEST_RUN', 'false') == 'true'
+PREDICTION_STREAM_NAME = os.getenv("PREDICTION_STREAM_NAME", "mlops_ride_events")
+RUN_ID = os.getenv("RUN_ID")
+TEST_RUN = os.getenv("TEST_RUN", "false") == "true"
 
 # logged_model = f's3://mlflow-leo-bucket-useast2/1/models/{RUN_ID}/artifacts'
 

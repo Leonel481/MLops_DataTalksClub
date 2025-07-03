@@ -1,12 +1,13 @@
 import os
 import pickle
+
 import click
-import mlflow
 import numpy as np
-from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
+import mlflow
+from hyperopt import STATUS_OK, Trials, hp, tpe, fmin
 from hyperopt.pyll import scope
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import root_mean_squared_error
+from sklearn.ensemble import RandomForestRegressor
 
 mlflow.set_tracking_uri("http://127.0.0.1:5000")
 mlflow.set_experiment("random-forest-hyperopt")
@@ -21,14 +22,13 @@ def load_pickle(filename: str):
 @click.option(
     "--data_path",
     default="./output",
-    help="Location where the processed NYC taxi trip data was saved"
+    help="Location where the processed NYC taxi trip data was saved",
 )
 @click.option(
     "--num_trials",
     default=15,
-    help="The number of parameter evaluations for the optimizer to explore"
+    help="The number of parameter evaluations for the optimizer to explore",
 )
-
 def run_optimization(data_path: str, num_trials: int):
 
     X_train, y_train = load_pickle(os.path.join(data_path, "train.pkl"))
@@ -36,30 +36,34 @@ def run_optimization(data_path: str, num_trials: int):
 
     def objective(params):
 
-        with mlflow.start_run(nested = True):
+        with mlflow.start_run(nested=True):
 
-            rf = RandomForestRegressor(**params, n_jobs=-1) # n_jobs=-1 : para tener todos los nucleos disponibles para ejecutar la funcion
+            rf = RandomForestRegressor(
+                **params, n_jobs=-1
+            )  # n_jobs=-1 : para tener todos los nucleos disponibles para ejecutar la funcion
             rf.fit(X_train, y_train)
             y_pred = rf.predict(X_val)
             rmse = root_mean_squared_error(y_val, y_pred)
-            
+
             mlflow.log_params(params)
-            mlflow.log_metric("rmse",rmse)
+            mlflow.log_metric("rmse", rmse)
 
             os.makedirs("models", exist_ok=True)
-            with open('models/lin_reg.bin', 'wb') as f_out:
-                pickle.dump(rf, f_out) 
+            with open("models/lin_reg.bin", "wb") as f_out:
+                pickle.dump(rf, f_out)
 
-            mlflow.log_artifact(local_path="models/lin_reg.bin", artifact_path="models_pickle")
+            mlflow.log_artifact(
+                local_path="models/lin_reg.bin", artifact_path="models_pickle"
+            )
 
-            return {'loss': rmse, 'status': STATUS_OK}
+            return {"loss": rmse, "status": STATUS_OK}
 
     search_space = {
-        'max_depth': scope.int(hp.quniform('max_depth', 1, 20, 1)),
-        'n_estimators': scope.int(hp.quniform('n_estimators', 10, 50, 1)),
-        'min_samples_split': scope.int(hp.quniform('min_samples_split', 2, 10, 1)),
-        'min_samples_leaf': scope.int(hp.quniform('min_samples_leaf', 1, 4, 1)),
-        'random_state': 42
+        "max_depth": scope.int(hp.quniform("max_depth", 1, 20, 1)),
+        "n_estimators": scope.int(hp.quniform("n_estimators", 10, 50, 1)),
+        "min_samples_split": scope.int(hp.quniform("min_samples_split", 2, 10, 1)),
+        "min_samples_leaf": scope.int(hp.quniform("min_samples_leaf", 1, 4, 1)),
+        "random_state": 42,
     }
 
     rstate = np.random.default_rng(42)  # for reproducible results
@@ -69,9 +73,9 @@ def run_optimization(data_path: str, num_trials: int):
         algo=tpe.suggest,
         max_evals=num_trials,
         trials=Trials(),
-        rstate=rstate
+        rstate=rstate,
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_optimization()

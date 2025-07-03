@@ -25,18 +25,18 @@ event = {
 }
 
 
-url = 'http://localhost:8080/2015-03-31/functions/function/invocations'
+url = "http://localhost:8080/2015-03-31/functions/function/invocations"
 actual_response = requests.post(url, json=event).json()
 
-print('actual response:')
+print("actual response:")
 print(json.dumps(actual_response, indent=2))
 
 expected_response = {
-    'predictions': [
+    "predictions": [
         {
-            'model': 'ride_duration_prediuction_model',
-            'version': 'm-ea1dfabd247448bbaaba443d31ce73b9',
-            'prediction': {'ride_duration': 10.0, 'ride_id': 256},
+            "model": "ride_duration_prediuction_model",
+            "version": "m-ea1dfabd247448bbaaba443d31ce73b9",
+            "prediction": {"ride_duration": 10.0, "ride_id": 256},
         }
     ]
 }

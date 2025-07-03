@@ -1,12 +1,11 @@
 import os
 import pickle
+
 import click
-
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import root_mean_squared_error
-
 import mlflow
 import mlflow.sklearn
+from sklearn.metrics import root_mean_squared_error
+from sklearn.ensemble import RandomForestRegressor
 
 
 def load_pickle(filename: str):
@@ -18,9 +17,8 @@ def load_pickle(filename: str):
 @click.option(
     "--data_path",
     default="./output",
-    help="Location where the processed NYC taxi trip data was saved"
+    help="Location where the processed NYC taxi trip data was saved",
 )
-
 def run_train(data_path: str):
 
     mlflow.set_tracking_uri("sqlite:///mlflow.db")
@@ -38,6 +36,5 @@ def run_train(data_path: str):
         rmse = root_mean_squared_error(y_val, y_pred)
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_train()
